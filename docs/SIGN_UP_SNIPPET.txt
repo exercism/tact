@@ -1,0 +1,17 @@
+contract WordCounter {
+    counts: map<Int, Int>;
+    best: String = "";
+
+    receive(word: String) {
+        let count: Int = (self.counts.get(sha256(word)) ?? 0) + 1;
+        self.counts.set(sha256(word), count);
+        if (count > (self.counts.get(sha256(self.best)) ?? 0)) {
+            self.best = word;
+        }
+    }
+
+    get fun mostCommonWord(): String {
+        let count: Int = self.counts.get(sha256(self.best)) ?? 0;
+        return beginString().concat(self.best).concat(" appears ").concat(count.toString()).toString();
+    }
+}
